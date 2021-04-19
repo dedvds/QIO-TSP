@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <script type='text/javascript'
+        src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key={{BING_KEY}}'></script>
+    <link rel="stylesheet" href="./public/src/main.css">
+    <title>Quantum inspired optimisation</title>
+</head>
+
+<body onload="GetMap();">
+    <div class="container-fluid">
+        <nav class="navbar navbar-dark bg-dark fixed-top">
+            <div class="container-fluid">
+                <span class="navbar-brand">
+                    <img src="./public/img/azurelogo.png" alt="" width="30" height="24"
+                        class="d-inline-block align-text-top">
+                    Optimize your salesman travel route
+                </span>
+                <span class="navbar-text">
+                    <a class="nav-link" href="https://docs.microsoft.com/en-us/azure/quantum/">Docs</a>
+                </span>
+            </div>
+        </nav>
+
+        <div class="row top-row">
+            <div class="col-3">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Search place" id="search-input">
+                    <button class="btn btn-outline-secondary" type="button" onclick="searchLocation()">Add</button>
+                </div>
+                <button type="button" class="btn btn-primary load-random-button" onclick="addAllCities()">Load random
+                    cities</button>
+                <div class="sticky-table">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Select</th>
+                                <th>Location</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-content">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-9">
+                <div class="row">
+                    <div id="bing-map"></div>
+                </div>
+                <div class="row stats">
+                    <div class="col-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <p class="fw-bold card-header-text">Solver options</p>
+                            </div>
+                            <div class="card-body">
+                                <select class="form-select solver-select" id="hardware-select"
+                                    aria-label="Select your solver type">
+                                    <option selected disabled>Select hardware type</option>
+                                    <option value="cpu">CPU</option>
+                                    <option value="fpga">FPGA</option>
+                                </select>
+
+                                <select class="form-select solver-select" id="timeout-select"
+                                    aria-placeholder="Select your timeout" aria-label="Select your timeout">
+                                    <option selected disabled>Select timeout in sec</option>
+                                    <option value="10">10</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                    <option value="200">200</option>
+                                    <option value="400">400</option>
+                                    <option value="800">800</option>
+                                </select>
+                                <select class="form-select solver-select" id="solver-select"
+                                    aria-label="Default select example">
+                                    <option selected disabled>Select solver type</option>
+                                    <option value="simulated annealing">Simulated annealing</option>
+                                    <option value="parallel tempering">Parallel tempering</option>
+                                    <option value="tabu search">Tabu search</option>
+                                </select>
+                                <div class="d-flex d-flex justify-content-between" id="calcroute-info">
+                                    <button type="button" class="btn btn-primary" onclick="calcuateRoute()"
+                                        id="calc-route-button" style="max-height: 3em;">Calcuate route</button>
+                                    <div id="calc-route-text">
+                                        <div> Calculating route...<img src="./public/img/loader.gif" class="loader-gif">
+                                        </div>
+                                        <p>Solverstatus: <span id="sovler-status">Waiting</span></p>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <p class="fw-bold card-header-text">Microsoft Azure QIO optimized route</p>
+                            </div>
+                            <div class="card-body">
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td>Number of cars:</td>
+                                            <td>1</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total locations:</td>
+                                            <td id="total-points">.</td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>Possible number of routes:</td>
+                                            <td id="possible-routes">0</td>
+                                        </tr>
+                                        <tr>
+                                            <td id="total-cost-unit">Total kilometers:</td>
+                                            <td id="total-cost">.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#list-stop-modal" id="list-stops-button" style="display: none;">
+                                    Show stop list
+                                </button>
+                                <div class="modal fade" id="list-stop-modal" tabindex="-1"
+                                    aria-labelledby="list-stop-modalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="list-stop-modalLabel">All stops</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <ol id="result-list">
+                                                </ol>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal fade" id="password-modal" tabindex="-1"
+                                    aria-labelledby="password-modalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="password-modalLabel">Set password</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="mb-3 row">
+                                                    <label for="inputPassword"
+                                                        class="col-sm-3 col-form-label">Password</label>
+                                                    <div class="col-sm-9">
+                                                        <input type="password" class="form-control" id="input-password">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Save</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://pagecdn.io/lib/mathjs/7.1.0/math.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
+            crossorigin="anonymous"></script>
+        <script src="./public/src/main.js"></script>
+
+
+</body>
+
+</html>

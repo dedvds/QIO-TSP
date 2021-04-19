@@ -1,0 +1,12 @@
+#ignore venv
+venv
+.env
+
+#ignore 
+.vscode
+
+#pycahce
+__pycache__
+__pycache__/
+
+RequestData
