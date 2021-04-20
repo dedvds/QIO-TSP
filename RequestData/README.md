@@ -1,0 +1,1 @@
+This folder is used as a temp store for requests when the requests are being processed. 
