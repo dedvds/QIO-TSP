@@ -9,6 +9,9 @@ on:
     branches: [ main ]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+  
+env:
+  BING_KEY : ${{ secrets.BING_KEY }}
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -21,6 +24,11 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+      
+      #Set the BING API key from the github secrets into the code
+      - name: Replace bing key
+        run: |
+          sed -i "s/{{BING_KEY}}/$BING_KEY/" ./public/index.html
 
       - name: Setup Python version
         uses: actions/setup-python@v2

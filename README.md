@@ -50,7 +50,7 @@ If you want to deploy this to Azure app service you can deploy this by running t
 
 2. Fork this project.
 3. Navigate to the settings page and then the secrets tab.
-4. Add a new secret named `DEPLOYMENT_PROFILE`, paste the contents of the deployment profile there. 
+4. Add a new secret named `DEPLOYMENT_PROFILE`, paste the contents of the deployment profile there. Then add another new secret named `BING_KEY` and assign it the Bing Maps API key. 
 5. Add the same settings as the in above `.env` file as application settings in the App service like [this](https://docs.microsoft.com/nl-nl/azure/app-service/configure-common).
 6. Run the github action.
 7. Have fun =).
