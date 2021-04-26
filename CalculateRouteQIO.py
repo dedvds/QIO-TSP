@@ -197,15 +197,15 @@ def CalculateRoute(CostMatrix, solverSetting: SolverSetting, workspace):
         
     ##### The type of hardware the solver will run on
     if HardwareSpec.lower() == 'cpu':
-        HardwareInt = 1
+        hardwarePlatform = HardwarePlatform.CPU
     elif HardwareSpec.lower() == 'fpga':
-        HardwareInt = 2
+        hardwarePlatform = HardwarePlatform.FPGA
     else:
         raise HTTPException(status_code=400, detail='Hardware choice not valid - choose from CPU/FPGA')
 
     ##### The solver algorithm initialized
     if SolverName.lower() == 'simulated annealing':
-        solver = SimulatedAnnealing(workspace, timeout = Timeout, platform= HardwareInt)
+        solver = SimulatedAnnealing(workspace, timeout = Timeout, platform=hardwarePlatform)
     elif SolverName.lower() == 'parallel tempering':
         solver = ParallelTempering(workspace, timeout = Timeout)
     elif SolverName.lower() == 'tabu search':
