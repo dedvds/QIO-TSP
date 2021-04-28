@@ -1,6 +1,6 @@
 # Quantum Inpired Optimization demo for the TSP problem
 
-This website can be used as a demo to show how Qauntum Inspired Compute can solve the Traveling Salesperson problem using an interactive map.
+This website can be used as a demo to show how Quantum Inspired Compute can solve the Traveling Salesperson problem using an interactive map.
 
 ## Requirements
 1. An Azure subscription with a Quantum Workspace. 
@@ -44,7 +44,7 @@ If you want to deploy this to Azure app service you can deploy this by running t
 1. Prepare the Azure enviorment.
     A. Create a Linux Python app service plan.
     B. Fetch the publish profile, you can do this by going the the App service in the Azure portal and click on `Get publish profile`.
-    C. Create an Azure Quantum workspace.
+    C. Create an Azure Quantum workspace. Note that if you want to use FPGAs you currently have to deploy to the `West US` region. 
     D. Add a service principle account to the Azure Quantum workspace like [this](https://docs.microsoft.com/en-us/azure/quantum/optimization-authenticate-service-principal). Note down the service principle information including the secret.
 
 
