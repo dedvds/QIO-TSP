@@ -477,8 +477,7 @@ function updateTotalLocationsAndPossibleRoutes() {
         }
     }
     document.getElementById('total-points').innerHTML = tmpCounter
-    let possibleRoutes = math.factorial(tmpCounter - 1) / 2
-
+    let possibleRoutes = math.factorial(tmpCounter - 1) // divide by 2 if you have an undirected network (A->B = B->A) 
     document.getElementById('possible-routes').innerHTML = possibleRoutes
 }
 
